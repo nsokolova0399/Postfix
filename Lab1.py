@@ -1,8 +1,18 @@
 from pythonds.basic.stack import Stack
 
+def is_digit(string):
+    if string.isdigit():
+        return True
+    else:
+        try:
+            float(string)
+            return True
+        except ValueError:
+            return False
+
 def infix_to_postfix(infix):
     with_enter = ''
-    check_altern = True  # операнд
+    check_altern = True
     flag = False
     if infix[0] == '-':
         flag = True
@@ -19,12 +29,10 @@ def infix_to_postfix(infix):
                 flag = False
             else:
                 if infix[i] != '(' and infix[i] != ')':
-                    # Проверить что происходит чередование символов
                     if check_altern:
-                        # Надо считать до момент пока не встретили пробел
-                        if infix[i].lower() in "abcdefghijklmnopqrstuvwxyz" or infix[i].isdigit():
+                        if infix[i].lower() in "abcdefghijklmnopqrstuvwxyz" or is_digit(infix[i]):
                             if i != len(infix) - 1:
-                                if not infix[i + 1].isdigit() and infix[i + 1] != '.':
+                                if not is_digit(infix[i + 1]) and infix[i + 1] != '.':
                                     check_altern = False
                         else:
                             raise Exception("Некорректная запись")
@@ -33,10 +41,8 @@ def infix_to_postfix(infix):
                             check_altern = True
                         else:
                             raise Exception("Некорректная запись")
-                    # if not check_num:
-                    # проверим нужно ли добавлять пробел
                     if i != len(infix) - 1 or infix[-1] == ')' or infix[-1] == '(':
-                        if (infix[i + 1].isdigit() or infix[i + 1] == '.') and infix[i] != '+' and infix[i] != '*' and \
+                        if (is_digit(infix[i + 1]) or infix[i + 1] == '.') and infix[i] != '+' and infix[i] != '*' and \
                                 infix[i] != '-' and infix[i] != '/':
                             with_enter += infix[i]
                         else:
@@ -58,7 +64,7 @@ def infix_to_postfix(infix):
     token_list = infix.split()
 
     for token in token_list:
-        if token.lower() in "abcdefghijklmnopqrstuvwxyz" or token.isdigit():
+        if token.lower() in "abcdefghijklmnopqrstuvwxyz" or is_digit(token):
             postfix_list.append(token)
         elif token == '(':
             op_stack.push(token)
@@ -68,8 +74,8 @@ def infix_to_postfix(infix):
                 postfix_list.append(top_token)
                 top_token = op_stack.pop()
         else:
-            while (not op_stack.isEmpty()) and \
-                    (priority_operation[op_stack.peek()] >= priority_operation[token]):
+
+            while (not op_stack.isEmpty()) and (priority_operation[op_stack.peek()] >= priority_operation[token]):
                 postfix_list.append(op_stack.pop())
             op_stack.push(token)
 
@@ -85,7 +91,7 @@ def postfix_eval(postfix_expr):
     operand_stack = Stack()
     token_list = postfix_expr.split()
     for token in token_list:
-        if token.lower() in "abcdefghijklmnopqrstuvwxyz" or token.isdigit():
+        if token.lower() in "abcdefghijklmnopqrstuvwxyz" or is_digit(token):
             if token.lower() in "abcdefghijklmnopqrstuvwxyz":
                 num = float(input(token + " = "))
                 operand_stack.push(num)
