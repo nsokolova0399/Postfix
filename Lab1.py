@@ -19,7 +19,6 @@ def infix_to_postfix(infix):
     elif infix[0] == '+':
         infix = infix[1:]
     for i in range(len(infix)):
-        print(infix[i])
         if infix[i] != ' ':
             if infix[i] == '.' or flag:
                 if flag:
@@ -74,7 +73,6 @@ def infix_to_postfix(infix):
                 postfix_list.append(top_token)
                 top_token = op_stack.pop()
         else:
-
             while (not op_stack.isEmpty()) and (priority_operation[op_stack.peek()] >= priority_operation[token]):
                 postfix_list.append(op_stack.pop())
             op_stack.push(token)
@@ -90,6 +88,7 @@ def infix_to_postfix(infix):
 def postfix_eval(postfix_expr):
     operand_stack = Stack()
     token_list = postfix_expr.split()
+    # new_list = list(set(token_list) & set(token_list))
     for token in token_list:
         if token.lower() in "abcdefghijklmnopqrstuvwxyz" or is_digit(token):
             if token.lower() in "abcdefghijklmnopqrstuvwxyz":
