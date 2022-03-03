@@ -1,5 +1,6 @@
 from pythonds.basic.stack import Stack
 
+# проверяем символы и точку в том числе
 def is_digit(string):
     if string.isdigit():
         return True
@@ -10,8 +11,9 @@ def is_digit(string):
         except ValueError:
             return False
 
+# перевод в постфиксную запись
 def infix_to_postfix(infix):
-    with_enter = ''
+    buf = ''
     check_altern = True
     flag = False
     if infix[0] == '-':
@@ -22,9 +24,9 @@ def infix_to_postfix(infix):
         if infix[i] != ' ':
             if infix[i] == '.' or flag:
                 if flag:
-                    with_enter += infix[i]+' '
+                    buf += infix[i]+' '
                 else:
-                    with_enter += infix[i]
+                    buf += infix[i]
                 flag = False
             else:
                 if infix[i] != '(' and infix[i] != ')':
@@ -43,15 +45,15 @@ def infix_to_postfix(infix):
                     if i != len(infix) - 1 or infix[-1] == ')' or infix[-1] == '(':
                         if (is_digit(infix[i + 1]) or infix[i + 1] == '.') and infix[i] != '+' and infix[i] != '*' and \
                                 infix[i] != '-' and infix[i] != '/':
-                            with_enter += infix[i]
+                            buf += infix[i]
                         else:
-                            with_enter += infix[i] + ' '
+                            buf += infix[i] + ' '
                     else:
-                        with_enter += infix[i] + ' '
+                        buf += infix[i] + ' '
                 else:
-                    with_enter += infix[i] + ' '
+                    buf += infix[i] + ' '
 
-    infix = with_enter
+    infix = buf
     priority_operation = {}
     priority_operation["*"] = 3
     priority_operation["/"] = 3
@@ -79,13 +81,13 @@ def infix_to_postfix(infix):
 
     while not op_stack.isEmpty():
         postfix_list.append(op_stack.pop())
-
     if '(' in postfix_list or ')' in postfix_list:
         raise Exception("Некорректная запись")
     return " ".join(postfix_list)
 
 
-def postfix_eval(postfix_expr):
+# вычисляем выражение в постфиксной записи
+def postfix_calculation(postfix_expr):
     operand_stack = Stack()
     token_list = postfix_expr.split()
     # new_list = list(set(token_list) & set(token_list))
@@ -102,22 +104,22 @@ def postfix_eval(postfix_expr):
                 operand1 = '~'
             else:
                 operand1 = operand_stack.pop()
-            result = math_compute(token, operand1, operand2)
+            result = calculation(token, operand1, operand2)
             operand_stack.push(result)
     return operand_stack.pop()
 
-
-def math_compute(op, op1, op2):
-    if op == "*":
-        return op1 * op2
-    elif op == "/":
-        return op1 / op2
-    elif op == "+":
-        return op1 + op2
-    elif op1 == "~":
-        return -op2
+# получение результата
+def calculation(sign, a, b):
+    if sign == "*":
+        return a * b
+    elif sign == "/":
+        return a / b
+    elif sign == "+":
+        return a + b
+    elif a == "~":
+        return -b
     else:
-        return op1 - op2
+        return a - b
 
 
 while True:
@@ -129,7 +131,7 @@ while True:
             raise Exception
         print("Постфиксная запись: {}".format(postfix))
         try:
-            answer = postfix_eval(postfix)
+            answer = postfix_calculation(postfix)
             print("Результат = {}".format(answer))
         except ZeroDivisionError:
             print("Деление на ноль запрещено!")
