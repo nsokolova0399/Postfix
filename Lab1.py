@@ -90,13 +90,17 @@ def infix_to_postfix(infix):
 def postfix_calculation(postfix_expr):
     operand_stack = Stack()
     token_list = postfix_expr.split()
+    map = {}
     # new_list = list(set(token_list) & set(token_list))
     for token in token_list:
         if token.lower() in "abcdefghijklmnopqrstuvwxyz" or is_digit(token):
             if token.lower() in "abcdefghijklmnopqrstuvwxyz":
-                num = float(input(token + " = "))
-                operand_stack.push(num)
-            else:
+                if token in map:
+                    operand_stack.push(map[token])
+                else:
+                    map[token] = float(input(token + " = "))
+                    operand_stack.push(map[token])
+            elif is_digit(token):
                 operand_stack.push(float(token))
         else:
             operand2 = operand_stack.pop()
@@ -123,9 +127,9 @@ def calculation(sign, a, b):
 
 
 while True:
-    print("-" * 20)
     try:
-        infix = input("Введите выражение: ")
+        print("\n")
+        infix = input("Исходная строка: ")
         postfix = infix_to_postfix(infix)
         if not postfix and ('+' not in postfix and '-' not in postfix and '*' not in postfix and '/' not in postfix):
             raise Exception
