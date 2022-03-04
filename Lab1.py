@@ -35,13 +35,13 @@ def infix_to_postfix(infix):
                             if i != len(infix) - 1:
                                 if not is_digit(infix[i + 1]) and infix[i + 1] != '.':
                                     check_altern = False
-                        else:
-                            raise Exception("Некорректная запись")
+                        # else:
+                        #     raise Exception("Ошибка!Некорректная запись!")
                     else:
                         if infix[i] == '+' or infix[i] == '-' or infix[i] == '*' or infix[i] == '/':
                             check_altern = True
                         else:
-                            raise Exception("Некорректная запись")
+                            raise Exception("Ошибка!Некорректная запись!")
                     if i != len(infix) - 1 or infix[-1] == ')' or infix[-1] == '(':
                         if (is_digit(infix[i + 1]) or infix[i + 1] == '.') and infix[i] != '+' and infix[i] != '*' and \
                                 infix[i] != '-' and infix[i] != '/':
@@ -137,11 +137,11 @@ while True:
         try:
             answer = postfix_calculation(postfix)
             print("Результат = {}".format(answer))
-        except ZeroDivisionError:
-            print("Деление на ноль запрещено!")
         except ValueError:
-            print("Ожидалось вещественное число.")
+            print("Необхходимо ввести вещественное число")
+        except ZeroDivisionError:
+            print("Нельзя делить на ноль!")
         except TypeError:
-            print("Не тот тип записи")
+            print("Ошибка типа записи")
     except Exception:
-        print("Некорректная запись")
+        print("Ошибка!Некорректная запись!")
